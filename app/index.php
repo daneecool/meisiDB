@@ -279,9 +279,25 @@ $meishi_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <!-- ページネーション -->
   <?php if ($total_pages > 1): ?>
     <div class="mt-6 text-center space-x-1">
+      <?php
+        $query = $_GET;
+        // First page
+        $query['page'] = 1;
+        $first_query = http_build_query($query);
+        // Previous page
+        $query['page'] = max(1, $page - 1);
+        $prev_query = http_build_query($query);
+        // Next page
+        $query['page'] = min($total_pages, $page + 1);
+        $next_query = http_build_query($query);
+        // Last page
+        $query['page'] = $total_pages;
+        $last_query = http_build_query($query);
+      ?>
+      <a href="?<?= htmlspecialchars($first_query) ?>" class="inline-block px-3 py-1 border rounded <?= $page == 1 ? 'bg-gray-300 text-gray-500 pointer-events-none' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">« 初</a>
+      <a href="?<?= htmlspecialchars($prev_query) ?>" class="inline-block px-3 py-1 border rounded <?= $page == 1 ? 'bg-gray-300 text-gray-500 pointer-events-none' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">‹ 前</a>
       <?php for ($p = 1; $p <= $total_pages; $p++): ?>
         <?php
-          $query = $_GET;
           $query['page'] = $p;
           $query_str = http_build_query($query);
         ?>
@@ -290,6 +306,8 @@ $meishi_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
            <?= $p ?>
         </a>
       <?php endfor; ?>
+      <a href="?<?= htmlspecialchars($next_query) ?>" class="inline-block px-3 py-1 border rounded <?= $page == $total_pages ? 'bg-gray-300 text-gray-500 pointer-events-none' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">次 ›</a>
+      <a href="?<?= htmlspecialchars($last_query) ?>" class="inline-block px-3 py-1 border rounded <?= $page == $total_pages ? 'bg-gray-300 text-gray-500 pointer-events-none' : 'bg-white text-blue-600 hover:bg-blue-100' ?>">後 »</a>
     </div>
   <?php endif; ?>
 
